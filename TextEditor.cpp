@@ -436,9 +436,9 @@ TextEditor::Coordinates TextEditor::FindWordEnd(const Coordinates & aFrom) const
 
 		if (prevspace != !!isspace(c))
 		{
-			if (isspace(c))
-				while (cindex < (int)line.size() && isspace(line[cindex].mChar))
-					++cindex;
+			//if (isspace(c))
+			//	while (cindex < (int)line.size() && isspace(line[cindex].mChar))
+			//		++cindex;
 			break;
 		}
 		cindex += d;
@@ -1506,8 +1506,7 @@ void TextEditor::SetSelection(const Coordinates & aStart, const Coordinates & aE
 	case TextEditor::SelectionMode::Word:
 	{
 		mState.mSelectionStart = FindWordStart(mState.mSelectionStart);
-		if (!IsOnWordBoundary(mState.mSelectionEnd))
-			mState.mSelectionEnd = FindWordEnd(FindWordStart(mState.mSelectionEnd));
+		mState.mSelectionEnd = FindWordEnd(FindWordStart(mState.mSelectionEnd));
 		break;
 	}
 	case TextEditor::SelectionMode::Line:
