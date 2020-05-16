@@ -45,6 +45,7 @@ TextEditor::TextEditor()
 	, mLastClick(-1.0f)
 	, mHandleKeyboardInputs(true)
 	, mHandleMouseInputs(true)
+	, mContextMenuEnabled(true)
 	, mIgnoreImGuiChild(false)
 	, mShowWhitespaces(true)
 	, mShowShortTabGlyphs(false)
@@ -866,6 +867,29 @@ void TextEditor::HandleMouseInputs()
 	}
 }
 
+void TextEditor::HandleContextMenu()
+{
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor();
+
+	if (ImGui::BeginPopupContextWindow())
+	{
+		bool ro = IsReadOnly();
+		if (ImGui::MenuItem("Cut", nullptr, nullptr, !ro && HasSelection()))
+			Cut();
+		if (ImGui::MenuItem("Copy", nullptr, nullptr, HasSelection()))
+			Copy();
+		if (ImGui::MenuItem("Delete", nullptr, nullptr, !ro && HasSelection()))
+			Delete();
+		if (ImGui::MenuItem("Paste", nullptr, nullptr, !ro && ImGui::GetClipboardText() != nullptr))
+			Paste();
+		ImGui::EndPopup();
+	}
+
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(mPalette[(int)PaletteIndex::Background]));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+}
+
 void TextEditor::Render()
 {
 	/* Compute mCharAdvance regarding to scaled font size (Ctrl + mouse wheel)*/
@@ -1180,6 +1204,9 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 
 	if (mHandleMouseInputs)
 		HandleMouseInputs();
+
+	if (mContextMenuEnabled)
+		HandleContextMenu();
 
 	ColorizeInternal();
 	Render();

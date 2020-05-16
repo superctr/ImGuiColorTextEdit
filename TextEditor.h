@@ -224,6 +224,9 @@ public:
 	inline void SetHandleKeyboardInputs (bool aValue){ mHandleKeyboardInputs = aValue;}
 	inline bool IsHandleKeyboardInputsEnabled() const { return mHandleKeyboardInputs; }
 
+	inline void SetContextMenuEnable    (bool aValue){ mHandleMouseInputs    = aValue;}
+	inline bool IsContextMenuEnabled() const { return mHandleKeyboardInputs; }
+
 	inline void SetImGuiChildIgnored    (bool aValue){ mIgnoreImGuiChild     = aValue;}
 	inline bool IsImGuiChildIgnored() const { return mIgnoreImGuiChild; }
 
@@ -349,6 +352,7 @@ private:
 
 	void HandleKeyboardInputs();
 	void HandleMouseInputs();
+	void HandleContextMenu();
 	void Render();
 
 	float mLineSpacing;
@@ -372,6 +376,7 @@ private:
 	SelectionMode mSelectionMode;
 	bool mHandleKeyboardInputs;
 	bool mHandleMouseInputs;
+	bool mContextMenuEnabled;
 	bool mIgnoreImGuiChild;
 	bool mShowWhitespaces;
 	bool mShowShortTabGlyphs;
