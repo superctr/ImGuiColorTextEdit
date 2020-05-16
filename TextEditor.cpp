@@ -49,6 +49,7 @@ TextEditor::TextEditor()
 	, mIgnoreImGuiChild(false)
 	, mShowWhitespaces(true)
 	, mShowShortTabGlyphs(false)
+	, mWindowIsFocused(false)
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
 {
 	SetPalette(GetDarkPalette());
@@ -703,7 +704,7 @@ ImU32 TextEditor::GetGlyphColor(const Glyph & aGlyph) const
 
 void TextEditor::HandleKeyboardInputs()
 {
-	if (ImGui::IsWindowFocused())
+	if (mWindowIsFocused)
 	{
 		if (ImGui::IsWindowHovered())
 			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
@@ -1003,7 +1004,7 @@ void TextEditor::Render()
 
 			if (mState.mCursorPosition.mLine == lineNo)
 			{
-				auto focused = ImGui::IsWindowFocused();
+				auto focused = IsWindowFocused();
 
 				// Highlight the current line (where the cursor is)
 				if (!HasSelection())
@@ -1196,6 +1197,8 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 	if (!mIgnoreImGuiChild)
 		ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove);
+
+	mWindowIsFocused = ImGui::IsWindowFocused();
 
 	if (mHandleKeyboardInputs)
 	{

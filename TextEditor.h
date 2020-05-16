@@ -236,6 +236,8 @@ public:
 	inline void SetShowShortTabGlyphs(bool aValue) { mShowShortTabGlyphs = aValue; }
 	inline bool IsShowingShortTabGlyphs() const { return mShowShortTabGlyphs; }
 
+	inline bool IsWindowFocused() const { return mWindowIsFocused; }
+
 	void SetTabSize(int aValue);
 	inline int GetTabSize() const { return mTabSize; }
 
@@ -380,6 +382,7 @@ private:
 	bool mIgnoreImGuiChild;
 	bool mShowWhitespaces;
 	bool mShowShortTabGlyphs;
+	bool mWindowIsFocused;
 
 	Palette mPaletteBase;
 	Palette mPalette;
