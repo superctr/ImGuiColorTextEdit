@@ -339,13 +339,13 @@ TextEditor::Coordinates TextEditor::ScreenPosToCoordinates(const ImVec2& aPositi
 		auto& line = mLines.at(lineNo);
 
 		float columnX = 0.0f;
-		
+
 		// First we find the hovered column coord.
 		for (size_t columnIndex = 0; columnIndex < line.size(); ++columnIndex)
 		{
 			float columnWidth = 0.0f;
 			int delta = 0;
-		
+
 			if (line[columnIndex].mChar == '\t')
 			{
 				float oldX = columnX;
@@ -365,7 +365,7 @@ TextEditor::Coordinates TextEditor::ScreenPosToCoordinates(const ImVec2& aPositi
 				columnX += columnWidth;
 				delta = 1;
 			}
-			
+
 			if (mTextStart + columnX - (aInsertionMode ? 0.5f : 0.0f) * columnWidth < local.x)
 				columnCoord += delta;
 			else
@@ -964,6 +964,31 @@ void TextEditor::Render()
 				ImVec2 vstart(lineStartScreenPos.x + mTextStart + sstart, lineStartScreenPos.y);
 				ImVec2 vend(lineStartScreenPos.x + mTextStart + ssend, lineStartScreenPos.y + mCharAdvance.y);
 				drawList->AddRectFilled(vstart, vend, mPalette[(int)PaletteIndex::Selection]);
+			}
+
+			// draw mml highlights
+			if (mMmlHighlights[lineNo].size() > 0)
+			{
+				for(auto && i : mMmlHighlights[lineNo])
+				{
+					Coordinates start = Coordinates(lineNo, i);
+					Coordinates end = Coordinates(lineNo, i+1); // TODO...
+
+					sstart = -1.0f;
+					ssend = -1.0f;
+
+					if (start <= lineEndCoord)
+						sstart = start > lineStartCoord ? TextDistanceToLineStart(start) : 0.0f;
+					if (end > lineStartCoord)
+						ssend = TextDistanceToLineStart(end < lineEndCoord ? end : lineEndCoord);
+
+					if (sstart != -1 && ssend != -1 && sstart < ssend)
+					{
+						ImVec2 vstart(lineStartScreenPos.x + mTextStart + sstart, lineStartScreenPos.y);
+						ImVec2 vend(lineStartScreenPos.x + mTextStart + ssend, lineStartScreenPos.y + mCharAdvance.y);
+						drawList->AddRectFilled(vstart, vend, mPalette[(int)PaletteIndex::ErrorMarker]);
+					}
+				}
 			}
 
 			// Draw breakpoints
@@ -2084,7 +2109,7 @@ const TextEditor::Palette & TextEditor::GetDarkPalette()
 {
 	const static Palette p = { {
 			0xff7f7f7f,	// Default
-			0xffd69c56,	// Keyword	
+			0xffd69c56,	// Keyword
 			0xff00ff00,	// Number
 			0xff7070e0,	// String
 			0xff70a0e0, // Char literal
@@ -2112,7 +2137,7 @@ const TextEditor::Palette & TextEditor::GetLightPalette()
 {
 	const static Palette p = { {
 			0xff7f7f7f,	// None
-			0xffff0c06,	// Keyword	
+			0xffff0c06,	// Keyword
 			0xff008000,	// Number
 			0xff2020a0,	// String
 			0xff304070, // Char literal
@@ -2140,7 +2165,7 @@ const TextEditor::Palette & TextEditor::GetRetroBluePalette()
 {
 	const static Palette p = { {
 			0xff00ffff,	// None
-			0xffffff00,	// Keyword	
+			0xffffff00,	// Keyword
 			0xff00ff00,	// Number
 			0xff808000,	// String
 			0xff808000, // Char literal
