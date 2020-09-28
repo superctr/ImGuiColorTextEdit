@@ -2552,11 +2552,14 @@ void TextEditor::EnsureCursorVisible()
 
 	if (pos.mLine < top)
 		ImGui::SetScrollY(std::max(0.0f, (pos.mLine - 1) * mCharAdvance.y));
-	if (pos.mLine > bottom - 2)
+	else if (pos.mLine > bottom - 2)
 		ImGui::SetScrollY(std::max(0.0f, (pos.mLine + 2) * mCharAdvance.y - height));
-	if (len + mTextStart < left + 4)
+
+	if (len < 4)
+		ImGui::SetScrollX(0.0f);
+	else if (len + mTextStart < left + 4)
 		ImGui::SetScrollX((len + mTextStart < width) ? 0.0f : std::max(0.0f, len + mTextStart - 4));
-	if (len + mTextStart > right - 4)
+	else if (len + mTextStart > right - 4)
 		ImGui::SetScrollX(std::max(0.0f, len + mTextStart + 4 - width));
 }
 
