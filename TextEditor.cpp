@@ -808,12 +808,13 @@ void TextEditor::HandleMouseInputs()
 			auto doubleClick = ImGui::IsMouseDoubleClicked(0);
 			auto t = ImGui::GetTime();
 			auto tripleClick = click && !doubleClick && (mLastClick != -1.0f && (t - mLastClick) < io.MouseDoubleClickTime);
+			auto coordinates = SanitizeCoordinates(ScreenPosToCoordinates(ImGui::GetMousePos(), !mOverwrite));
 
 			/*
 			Left mouse button triple click
 			*/
 
-			if (tripleClick)
+			if (tripleClick && coordinates == mState.mCursorPosition)
 			{
 				if (!ctrl)
 				{
@@ -829,7 +830,7 @@ void TextEditor::HandleMouseInputs()
 			Left mouse button double click
 			*/
 
-			else if (doubleClick)
+			else if (doubleClick && coordinates == mState.mCursorPosition)
 			{
 				if (!ctrl)
 				{
@@ -847,7 +848,7 @@ void TextEditor::HandleMouseInputs()
 			/*
 			Left mouse button click
 			*/
-			else if (click)
+			else if (click || doubleClick)
 			{
 				mState.mCursorPosition = mInteractiveStart = mInteractiveEnd = SanitizeCoordinates(ScreenPosToCoordinates(ImGui::GetMousePos(), !mOverwrite));
 				if (ctrl)
