@@ -1972,7 +1972,7 @@ void TextEditor::Backspace()
 			--u.mRemovedStart.mColumn;
 
 			if (line[cindex].mChar == '\t')
-				mState.mCursorPosition.mColumn -= mTabSize;
+				mState.mCursorPosition.mColumn = GetCharacterColumn(mState.mCursorPosition.mLine,cindex);
 			else
 				--mState.mCursorPosition.mColumn;
 
